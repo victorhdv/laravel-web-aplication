@@ -17,12 +17,23 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/series');
 });
-// caso estivesse sendo seguido o padrão de nomenclatura da documentação para o Controller
-//Route::resource('/series',SeriesController::class);
+// Sendo seguido o padrão de nomenclatura da documentação para o Controller
+Route::resource('/series',SeriesController::class)
+    ->except('show');
 
-Route::controller(SeriesController::class)->group(function (){
-    Route::get('/series', 'index');
-    Route::get('/series/criar', 'create');
-    route::post('/series/salvar', 'store');
+/*
+utilizando post pois o html não suporta delete
+Route::post('series/destroy/{serie}',[SeriesController::class,'destroy'])
+    ->name('series.destroy');
+Com a utilização do @ Method no html foi possivel utilizar o delete e apenas indexar no route resource
+Route::delete('series/destroy/{serie}',[SeriesController::class,'destroy'])
+    ->name('series.destroy');
 
-});
+    caso não fosse seguida a documentação do laravel
+    Route::controller(SeriesController::class)->group(function (){
+    Route::get('/series', 'index')->name('series.index');
+    Route::get('/series/criar', 'create')->name('series.create');
+    route::post('/series/salvar', 'store')->name('series.store');
+
+})*/
+

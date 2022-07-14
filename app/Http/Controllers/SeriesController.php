@@ -8,13 +8,18 @@ use Illuminate\Support\Facades\DB;
 
 class SeriesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         //retonar toda a coleção
         //$series = Serie::all();
 
         $series = Serie::query()->orderBy('nome')->get();
-        return view('series.index')->with('series', $series);
+        $messageSuccess = session('message.success');
+        /*com o ->flash não precisa usar o forget
+         * $request->session()->forget('message.success');
+        */
+        return view('series.index')->with('series', $series)
+            ->with('messageSuccess', $messageSuccess);
     }
 
     public function create()
@@ -26,7 +31,7 @@ class SeriesController extends Controller
     {
 
     //  mass assignement
-        Serie::create($request->all());
+        $serie = Serie::create($request->all());
 
     //  acessando diretamente a propriedade do request
     //  $nomeSerie = $request->nome;
@@ -34,8 +39,32 @@ class SeriesController extends Controller
     //  $serie->nome = $nomeSerie;
     //  $serie->save();
     //  DB::insert('INSERT INTO series (nome) VALUES (?)', [$nomeSerie]);
-        return redirect('/series');
+        return to_route('series.index')
+            ->with('message.success', "Série '{$serie->nome}' adicionada com sucesso");
 
 
+    }
+
+    public function destroy(Serie $series)
+    {
+        $series->delete();
+
+
+        return to_route('series.index')
+            ->with('message.success', "Série '{$series->nome}' removida com sucesso");
+    }
+
+    public function edit(Serie $series)
+    {
+        return view('series.edit')->with('serie', $series);
+    }
+
+    public function update(Serie $series,Request $request)
+    {
+        $series->fill($request->all());
+        $series->save();
+
+        return to_route('series.index')
+            ->with('message.success', "Série '{$series->nome}' atualizada com sucesso");;
     }
 }
