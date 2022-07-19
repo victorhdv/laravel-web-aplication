@@ -11,7 +11,9 @@
     <ul class="list-group">
         @foreach ($series as $serie)
         <li class="list-group-item d-flex align-items-center justify-content-between">
-            {{ $serie->nome }}
+           <a href="{{ route('seasons.index', $serie->id) }}">
+               {{ $serie->nome }}
+           </a>
             {{--Não é interessante ter um link com ações destrutivas já que pode ser
             acessado por crawlers de busca que vão performar ações destrutivas em nosso sistema.--}}
             <span class="d-flex">
